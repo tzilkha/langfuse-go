@@ -47,24 +47,26 @@ const (
 )
 
 type Generation struct {
-	TraceID             string           `json:"traceId,omitempty"`
-	Name                string           `json:"name,omitempty"`
-	StartTime           *time.Time       `json:"startTime,omitempty"`
-	Metadata            any              `json:"metadata,omitempty"`
-	Input               any              `json:"input,omitempty"`
-	Output              any              `json:"output,omitempty"`
-	Level               ObservationLevel `json:"level,omitempty"`
-	StatusMessage       string           `json:"statusMessage,omitempty"`
-	ParentObservationID string           `json:"parentObservationId,omitempty"`
-	Version             string           `json:"version,omitempty"`
-	ID                  string           `json:"id,omitempty"`
-	EndTime             *time.Time       `json:"endTime,omitempty"`
-	CompletionStartTime *time.Time       `json:"completionStartTime,omitempty"`
-	Model               string           `json:"model,omitempty"`
-	ModelParameters     any              `json:"modelParameters,omitempty"`
-	Usage               Usage            `json:"usage,omitempty"`
-	PromptName          string           `json:"promptName,omitempty"`
-	PromptVersion       int              `json:"promptVersion,omitempty"`
+	TraceID             string             `json:"traceId,omitempty"`
+	Name                string             `json:"name,omitempty"`
+	StartTime           *time.Time         `json:"startTime,omitempty"`
+	Metadata            any                `json:"metadata,omitempty"`
+	Input               any                `json:"input,omitempty"`
+	Output              any                `json:"output,omitempty"`
+	Level               ObservationLevel   `json:"level,omitempty"`
+	StatusMessage       string             `json:"statusMessage,omitempty"`
+	ParentObservationID string             `json:"parentObservationId,omitempty"`
+	Version             string             `json:"version,omitempty"`
+	ID                  string             `json:"id,omitempty"`
+	EndTime             *time.Time         `json:"endTime,omitempty"`
+	CompletionStartTime *time.Time         `json:"completionStartTime,omitempty"`
+	Model               string             `json:"model,omitempty"`
+	ModelParameters     map[string]any     `json:"modelParameters,omitempty"`
+	Usage               Usage              `json:"usage,omitempty"`
+	UsageDetails        map[string]int     `json:"usageDetails,omitempty"`
+	CostDetails         map[string]float64 `json:"costDetails,omitempty"`
+	PromptName          string             `json:"promptName,omitempty"`
+	PromptVersion       int                `json:"promptVersion,omitempty"`
 }
 
 type Usage struct {
