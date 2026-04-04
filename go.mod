@@ -1,4 +1,4 @@
-module github.com/henomis/langfuse-go
+module github.com/tzilkha/langfuse-go
 
 go 1.21.1
 
