@@ -46,8 +46,24 @@ const (
 	ObservationLevelError   ObservationLevel = "ERROR"
 )
 
+type ObservationType string
+
+const (
+	ObservationTypeSpan       ObservationType = "SPAN"
+	ObservationTypeGeneration ObservationType = "GENERATION"
+	ObservationTypeEvent      ObservationType = "EVENT"
+	ObservationTypeAgent      ObservationType = "AGENT"
+	ObservationTypeTool       ObservationType = "TOOL"
+	ObservationTypeChain      ObservationType = "CHAIN"
+	ObservationTypeRetriever  ObservationType = "RETRIEVER"
+	ObservationTypeEvaluator  ObservationType = "EVALUATOR"
+	ObservationTypeEmbedding  ObservationType = "EMBEDDING"
+	ObservationTypeGuardrail  ObservationType = "GUARDRAIL"
+)
+
 type Generation struct {
 	TraceID             string             `json:"traceId,omitempty"`
+	Type                ObservationType    `json:"type,omitempty"`
 	Name                string             `json:"name,omitempty"`
 	StartTime           *time.Time         `json:"startTime,omitempty"`
 	Metadata            any                `json:"metadata,omitempty"`
@@ -104,6 +120,23 @@ type Score struct {
 
 type Span struct {
 	TraceID             string           `json:"traceId,omitempty"`
+	Type                ObservationType  `json:"type,omitempty"`
+	Name                string           `json:"name,omitempty"`
+	StartTime           *time.Time       `json:"startTime,omitempty"`
+	Metadata            any              `json:"metadata,omitempty"`
+	Input               any              `json:"input,omitempty"`
+	Output              any              `json:"output,omitempty"`
+	Level               ObservationLevel `json:"level,omitempty"`
+	StatusMessage       string           `json:"statusMessage,omitempty"`
+	ParentObservationID string           `json:"parentObservationId,omitempty"`
+	Version             string           `json:"version,omitempty"`
+	ID                  string           `json:"id,omitempty"`
+	EndTime             *time.Time       `json:"endTime,omitempty"`
+}
+
+type Tool struct {
+	TraceID             string           `json:"traceId,omitempty"`
+	Type                ObservationType  `json:"type,omitempty"`
 	Name                string           `json:"name,omitempty"`
 	StartTime           *time.Time       `json:"startTime,omitempty"`
 	Metadata            any              `json:"metadata,omitempty"`
@@ -119,6 +152,7 @@ type Span struct {
 
 type Event struct {
 	TraceID             string           `json:"traceId,omitempty"`
+	Type                ObservationType  `json:"type,omitempty"`
 	Name                string           `json:"name,omitempty"`
 	StartTime           *time.Time       `json:"startTime,omitempty"`
 	Metadata            any              `json:"metadata,omitempty"`

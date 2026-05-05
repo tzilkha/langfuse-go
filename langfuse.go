@@ -69,6 +69,8 @@ func (l *Langfuse) Trace(t *model.Trace) (*model.Trace, error) {
 }
 
 func (l *Langfuse) Generation(g *model.Generation, parentID *string) (*model.Generation, error) {
+	g.Type = model.ObservationTypeGeneration
+
 	if g.TraceID == "" {
 		traceID, err := l.createTrace(g.Name)
 		if err != nil {
@@ -134,6 +136,8 @@ func (l *Langfuse) Score(s *model.Score) (*model.Score, error) {
 }
 
 func (l *Langfuse) Span(s *model.Span, parentID *string) (*model.Span, error) {
+	s.Type = model.ObservationTypeSpan
+
 	if s.TraceID == "" {
 		traceID, err := l.createTrace(s.Name)
 		if err != nil {
@@ -183,6 +187,8 @@ func (l *Langfuse) SpanEnd(s *model.Span) (*model.Span, error) {
 }
 
 func (l *Langfuse) Event(e *model.Event, parentID *string) (*model.Event, error) {
+	e.Type = model.ObservationTypeEvent
+
 	if e.TraceID == "" {
 		traceID, err := l.createTrace(e.Name)
 		if err != nil {
@@ -208,6 +214,57 @@ func (l *Langfuse) Event(e *model.Event, parentID *string) (*model.Event, error)
 	)
 
 	return e, nil
+}
+
+func (l *Langfuse) Tool(t *model.Tool, parentID *string) (*model.Tool, error) {
+	t.Type = model.ObservationTypeTool
+
+	if t.TraceID == "" {
+		traceID, err := l.createTrace(t.Name)
+		if err != nil {
+			return nil, err
+		}
+
+		t.TraceID = traceID
+	}
+
+	t.ID = buildID(&t.ID)
+
+	if parentID != nil {
+		t.ParentObservationID = *parentID
+	}
+
+	l.observer.Dispatch(
+		model.IngestionEvent{
+			ID:        buildID(nil),
+			Type:      model.IngestionEventTypeSpanCreate,
+			Timestamp: time.Now().UTC(),
+			Body:      t,
+		},
+	)
+
+	return t, nil
+}
+
+func (l *Langfuse) ToolEnd(t *model.Tool) (*model.Tool, error) {
+	if t.ID == "" {
+		return nil, fmt.Errorf("tool ID is required")
+	}
+
+	if t.TraceID == "" {
+		return nil, fmt.Errorf("trace ID is required")
+	}
+
+	l.observer.Dispatch(
+		model.IngestionEvent{
+			ID:        buildID(nil),
+			Type:      model.IngestionEventTypeSpanUpdate,
+			Timestamp: time.Now().UTC(),
+			Body:      t,
+		},
+	)
+
+	return t, nil
 }
 
 func (l *Langfuse) createTrace(traceName string) (string, error) {
