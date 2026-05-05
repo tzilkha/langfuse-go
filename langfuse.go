@@ -315,6 +315,98 @@ func (l *Langfuse) ToolEnd(t *model.Tool) (*model.Tool, error) {
 	return t, nil
 }
 
+func (l *Langfuse) Agent(a *model.Agent, parentID *string) (*model.Agent, error) {
+	a.Type = model.ObservationTypeAgent
+
+	parentCtx, traceID, err := l.resolveParent(a.TraceID, parentID, a.Name)
+	if err != nil {
+		return nil, err
+	}
+	a.TraceID = traceID
+
+	startTime := time.Now()
+	if a.StartTime != nil {
+		startTime = *a.StartTime
+	}
+
+	ctx, span := l.tracer.Start(parentCtx, a.Name, oteltrace.WithTimestamp(startTime))
+	setObservationAttributes(span, model.ObservationTypeAgent, a.Level, a.StatusMessage, a.Version, a.Input, a.Output, a.Metadata)
+
+	a.ID = span.SpanContext().SpanID().String()
+	if parentID != nil && *parentID != "" {
+		a.ParentObservationID = *parentID
+	}
+
+	l.mu.Lock()
+	l.spans[a.ID] = &spanEntry{span: span, ctx: ctx}
+	l.mu.Unlock()
+
+	return a, nil
+}
+
+func (l *Langfuse) AgentEnd(a *model.Agent) (*model.Agent, error) {
+	if a.ID == "" {
+		return nil, fmt.Errorf("agent ID is required")
+	}
+	entry, ok := l.takeSpan(a.ID)
+	if !ok {
+		return nil, fmt.Errorf("agent %q not found", a.ID)
+	}
+	setObservationAttributes(entry.span, model.ObservationTypeAgent, a.Level, a.StatusMessage, a.Version, a.Input, a.Output, a.Metadata)
+	endTime := time.Now()
+	if a.EndTime != nil {
+		endTime = *a.EndTime
+	}
+	entry.span.End(oteltrace.WithTimestamp(endTime))
+	return a, nil
+}
+
+func (l *Langfuse) Guardrail(g *model.Guardrail, parentID *string) (*model.Guardrail, error) {
+	g.Type = model.ObservationTypeGuardrail
+
+	parentCtx, traceID, err := l.resolveParent(g.TraceID, parentID, g.Name)
+	if err != nil {
+		return nil, err
+	}
+	g.TraceID = traceID
+
+	startTime := time.Now()
+	if g.StartTime != nil {
+		startTime = *g.StartTime
+	}
+
+	ctx, span := l.tracer.Start(parentCtx, g.Name, oteltrace.WithTimestamp(startTime))
+	setObservationAttributes(span, model.ObservationTypeGuardrail, g.Level, g.StatusMessage, g.Version, g.Input, g.Output, g.Metadata)
+
+	g.ID = span.SpanContext().SpanID().String()
+	if parentID != nil && *parentID != "" {
+		g.ParentObservationID = *parentID
+	}
+
+	l.mu.Lock()
+	l.spans[g.ID] = &spanEntry{span: span, ctx: ctx}
+	l.mu.Unlock()
+
+	return g, nil
+}
+
+func (l *Langfuse) GuardrailEnd(g *model.Guardrail) (*model.Guardrail, error) {
+	if g.ID == "" {
+		return nil, fmt.Errorf("guardrail ID is required")
+	}
+	entry, ok := l.takeSpan(g.ID)
+	if !ok {
+		return nil, fmt.Errorf("guardrail %q not found", g.ID)
+	}
+	setObservationAttributes(entry.span, model.ObservationTypeGuardrail, g.Level, g.StatusMessage, g.Version, g.Input, g.Output, g.Metadata)
+	endTime := time.Now()
+	if g.EndTime != nil {
+		endTime = *g.EndTime
+	}
+	entry.span.End(oteltrace.WithTimestamp(endTime))
+	return g, nil
+}
+
 func (l *Langfuse) Event(e *model.Event, parentID *string) (*model.Event, error) {
 	e.Type = model.ObservationTypeEvent
 

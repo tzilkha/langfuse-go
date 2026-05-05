@@ -130,6 +130,38 @@ type Tool struct {
 	EndTime             *time.Time       `json:"endTime,omitempty"`
 }
 
+type Agent struct {
+	TraceID             string           `json:"traceId,omitempty"`
+	Type                ObservationType  `json:"type,omitempty"`
+	Name                string           `json:"name,omitempty"`
+	StartTime           *time.Time       `json:"startTime,omitempty"`
+	Metadata            any              `json:"metadata,omitempty"`
+	Input               any              `json:"input,omitempty"`
+	Output              any              `json:"output,omitempty"`
+	Level               ObservationLevel `json:"level,omitempty"`
+	StatusMessage       string           `json:"statusMessage,omitempty"`
+	ParentObservationID string           `json:"parentObservationId,omitempty"`
+	Version             string           `json:"version,omitempty"`
+	ID                  string           `json:"id,omitempty"`
+	EndTime             *time.Time       `json:"endTime,omitempty"`
+}
+
+type Guardrail struct {
+	TraceID             string           `json:"traceId,omitempty"`
+	Type                ObservationType  `json:"type,omitempty"`
+	Name                string           `json:"name,omitempty"`
+	StartTime           *time.Time       `json:"startTime,omitempty"`
+	Metadata            any              `json:"metadata,omitempty"`
+	Input               any              `json:"input,omitempty"`
+	Output              any              `json:"output,omitempty"`
+	Level               ObservationLevel `json:"level,omitempty"`
+	StatusMessage       string           `json:"statusMessage,omitempty"`
+	ParentObservationID string           `json:"parentObservationId,omitempty"`
+	Version             string           `json:"version,omitempty"`
+	ID                  string           `json:"id,omitempty"`
+	EndTime             *time.Time       `json:"endTime,omitempty"`
+}
+
 type Event struct {
 	TraceID             string           `json:"traceId,omitempty"`
 	Type                ObservationType  `json:"type,omitempty"`
