@@ -2,26 +2,6 @@ package model
 
 import "time"
 
-type IngestionEventType string
-
-const (
-	IngestionEventTypeTraceCreate      = "trace-create"
-	IngestionEventTypeGenerationCreate = "generation-create"
-	IngestionEventTypeGenerationUpdate = "generation-update"
-	IngestionEventTypeScoreCreate      = "score-create"
-	IngestionEventTypeSpanCreate       = "span-create"
-	IngestionEventTypeSpanUpdate       = "span-update"
-	IngestionEventTypeEventCreate      = "event-create"
-)
-
-type IngestionEvent struct {
-	Type      IngestionEventType `json:"type"`
-	ID        string             `json:"id"`
-	Timestamp time.Time          `json:"timestamp"`
-	Metadata  any
-	Body      any `json:"body"`
-}
-
 type Trace struct {
 	ID        string     `json:"id,omitempty"`
 	Timestamp *time.Time `json:"timestamp,omitempty"`
@@ -49,16 +29,16 @@ const (
 type ObservationType string
 
 const (
-	ObservationTypeSpan       ObservationType = "SPAN"
-	ObservationTypeGeneration ObservationType = "GENERATION"
-	ObservationTypeEvent      ObservationType = "EVENT"
-	ObservationTypeAgent      ObservationType = "AGENT"
-	ObservationTypeTool       ObservationType = "TOOL"
-	ObservationTypeChain      ObservationType = "CHAIN"
-	ObservationTypeRetriever  ObservationType = "RETRIEVER"
-	ObservationTypeEvaluator  ObservationType = "EVALUATOR"
-	ObservationTypeEmbedding  ObservationType = "EMBEDDING"
-	ObservationTypeGuardrail  ObservationType = "GUARDRAIL"
+	observationTypeSpan       ObservationType = "span"
+	observationTypeGeneration ObservationType = "generation"
+	observationTypeEvent      ObservationType = "event"
+	observationTypeAgent      ObservationType = "agent"
+	observationTypeTool       ObservationType = "tool"
+	observationTypeChain      ObservationType = "chain"
+	observationTypeRetriever  ObservationType = "retriever"
+	observationTypeEvaluator  ObservationType = "evaluator"
+	observationTypeEmbedding  ObservationType = "embedding"
+	observationTypeGuardrail  ObservationType = "guardrail"
 )
 
 type Generation struct {
