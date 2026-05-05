@@ -497,7 +497,7 @@ func setObservationAttributes(
 	output any,
 	metadata any,
 ) {
-	span.SetAttributes(attribute.String("langfuse.observation.type", strings.ToLower(string(obsType))))
+	span.SetAttributes(attribute.String("langfuse.observation.type", string(obsType)))
 	if level != "" {
 		span.SetAttributes(attribute.String("langfuse.observation.level", string(level)))
 	}

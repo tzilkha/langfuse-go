@@ -29,16 +29,16 @@ const (
 type ObservationType string
 
 const (
-	observationTypeSpan       ObservationType = "span"
-	observationTypeGeneration ObservationType = "generation"
-	observationTypeEvent      ObservationType = "event"
-	observationTypeAgent      ObservationType = "agent"
-	observationTypeTool       ObservationType = "tool"
-	observationTypeChain      ObservationType = "chain"
-	observationTypeRetriever  ObservationType = "retriever"
-	observationTypeEvaluator  ObservationType = "evaluator"
-	observationTypeEmbedding  ObservationType = "embedding"
-	observationTypeGuardrail  ObservationType = "guardrail"
+	ObservationTypeSpan       ObservationType = "span"
+	ObservationTypeGeneration ObservationType = "generation"
+	ObservationTypeEvent      ObservationType = "event"
+	ObservationTypeAgent      ObservationType = "agent"
+	ObservationTypeTool       ObservationType = "tool"
+	ObservationTypeChain      ObservationType = "chain"
+	ObservationTypeRetriever  ObservationType = "retriever"
+	ObservationTypeEvaluator  ObservationType = "evaluator"
+	ObservationTypeEmbedding  ObservationType = "embedding"
+	ObservationTypeGuardrail  ObservationType = "guardrail"
 )
 
 type Generation struct {
