@@ -551,10 +551,10 @@ func setTraceAttributes(span oteltrace.Span, t *model.Trace) {
 		span.SetAttributes(attribute.String("langfuse.trace.name", t.Name))
 	}
 	if t.UserID != "" {
-		span.SetAttributes(attribute.String("langfuse.trace.user.id", t.UserID))
+		span.SetAttributes(attribute.String("langfuse.user.id", t.UserID)) // was langfuse.trace.user.id
 	}
 	if t.SessionID != "" {
-		span.SetAttributes(attribute.String("langfuse.trace.session.id", t.SessionID))
+		span.SetAttributes(attribute.String("langfuse.session.id", t.SessionID)) // was langfuse.trace.session.id
 	}
 	if len(t.Tags) > 0 {
 		span.SetAttributes(attribute.StringSlice("langfuse.trace.tags", t.Tags))
@@ -574,8 +574,9 @@ func setTraceAttributes(span oteltrace.Span, t *model.Trace) {
 	if v, ok := jsonAttr(t.Output); ok {
 		span.SetAttributes(attribute.String("langfuse.trace.output", v))
 	}
-	if v, ok := jsonAttr(t.Metadata); ok {
-		span.SetAttributes(attribute.String("langfuse.trace.metadata", v))
+	// metadata: one attribute per top-level key, prefixed key segment
+	for k, val := range asStringMap(t.Metadata) {
+		span.SetAttributes(attribute.String("langfuse.trace.metadata."+k, val))
 	}
 }
 
@@ -693,4 +694,28 @@ func jsonAttr(v any) (string, bool) {
 
 func basicAuth(publicKey, secretKey string) string {
 	return "Basic " + base64.StdEncoding.EncodeToString([]byte(publicKey+":"+secretKey))
+}
+
+func asStringMap(v any) map[string]string {
+	out := map[string]string{}
+	if v == nil {
+		return out
+	}
+	// normalize through JSON so any map/struct works
+	b, err := json.Marshal(v)
+	if err != nil {
+		return out
+	}
+	var m map[string]any
+	if json.Unmarshal(b, &m) != nil {
+		return out
+	}
+	for k, val := range m {
+		if s, ok := val.(string); ok {
+			out[k] = s
+		} else if vb, err := json.Marshal(val); err == nil {
+			out[k] = string(vb) // nested values JSON-encoded
+		}
+	}
+	return out
 }
