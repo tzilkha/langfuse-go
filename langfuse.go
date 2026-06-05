@@ -551,10 +551,10 @@ func setTraceAttributes(span oteltrace.Span, t *model.Trace) {
 		span.SetAttributes(attribute.String("langfuse.trace.name", t.Name))
 	}
 	if t.UserID != "" {
-		span.SetAttributes(attribute.String("langfuse.trace.userId", t.UserID))
+		span.SetAttributes(attribute.String("langfuse.trace.user.id", t.UserID))
 	}
 	if t.SessionID != "" {
-		span.SetAttributes(attribute.String("langfuse.trace.sessionId", t.SessionID))
+		span.SetAttributes(attribute.String("langfuse.trace.session.id", t.SessionID))
 	}
 	if len(t.Tags) > 0 {
 		span.SetAttributes(attribute.StringSlice("langfuse.trace.tags", t.Tags))
