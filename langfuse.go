@@ -95,7 +95,8 @@ func (l *Langfuse) initTracer(ctx context.Context) error {
 		otlptracehttp.WithEndpoint(endpoint),
 		otlptracehttp.WithURLPath(otelTracesPath),
 		otlptracehttp.WithHeaders(map[string]string{
-			"Authorization": basicAuth(l.publicKey, l.secretKey),
+			"Authorization":                basicAuth(l.publicKey, l.secretKey),
+			"x-langfuse-ingestion-version": "4",
 		}),
 	}
 	if strings.EqualFold(u.Scheme, "http") {
@@ -569,10 +570,10 @@ func setTraceAttributes(span oteltrace.Span, t *model.Trace) {
 		span.SetAttributes(attribute.String("langfuse.version", t.Version))
 	}
 	if v, ok := jsonAttr(t.Input); ok {
-		span.SetAttributes(attribute.String("langfuse.trace.input", v))
+		span.SetAttributes(attribute.String("langfuse.observation.input", v))
 	}
 	if v, ok := jsonAttr(t.Output); ok {
-		span.SetAttributes(attribute.String("langfuse.trace.output", v))
+		span.SetAttributes(attribute.String("langfuse.observation.output", v))
 	}
 	// metadata: one attribute per top-level key, prefixed key segment
 	for k, val := range asStringMap(t.Metadata) {
