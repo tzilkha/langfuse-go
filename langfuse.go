@@ -33,10 +33,7 @@ const (
 	defaultLangfuseHost = "https://cloud.langfuse.com"
 	otelTracesPath      = "/api/public/otel/v1/traces"
 	scoresPath          = "/api/public/scores"
-	// Ingestion v4 header, see https://langfuse.com/integrations/native/opentelemetry
-	ingestionVersionHeader = "x-langfuse-ingestion-version"
-	ingestionVersion       = "4"
-	tracerName             = "github.com/tzilkha/langfuse-go"
+	tracerName          = "github.com/tzilkha/langfuse-go"
 )
 
 // spanEntry is an OTel span we are tracking so future child observations
@@ -106,9 +103,8 @@ func (l *Langfuse) initTracer(ctx context.Context) error {
 		otlptracehttp.WithEndpoint(endpoint),
 		otlptracehttp.WithURLPath(otelTracesPath),
 		otlptracehttp.WithHeaders(map[string]string{
-			"Authorization": basicAuth(l.publicKey, l.secretKey),
-			// Without it, Langfuse may show OTel data up to 10 minutes late.
-			ingestionVersionHeader: ingestionVersion,
+			"Authorization":                basicAuth(l.publicKey, l.secretKey),
+			"x-langfuse-ingestion-version": "4",
 		}),
 	}
 	if strings.EqualFold(u.Scheme, "http") {
@@ -590,10 +586,10 @@ func traceAttributes(t *model.Trace) []attribute.KeyValue {
 		kvs = append(kvs, attribute.String("langfuse.version", t.Version))
 	}
 	if v, ok := jsonAttr(t.Input); ok {
-		kvs = append(kvs, attribute.String("langfuse.trace.input", v))
+		kvs = append(kvs, attribute.String("langfuse.observation.input", v))
 	}
 	if v, ok := jsonAttr(t.Output); ok {
-		kvs = append(kvs, attribute.String("langfuse.trace.output", v))
+		kvs = append(kvs, attribute.String("langfuse.observation.output", v))
 	}
 	// metadata: one attribute per top-level key, prefixed key segment
 	meta := asStringMap(t.Metadata)
