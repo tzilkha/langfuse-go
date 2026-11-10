@@ -33,7 +33,10 @@ const (
 	defaultLangfuseHost = "https://cloud.langfuse.com"
 	otelTracesPath      = "/api/public/otel/v1/traces"
 	scoresPath          = "/api/public/scores"
-	tracerName          = "github.com/tzilkha/langfuse-go"
+	// Ingestion v4 header, see https://langfuse.com/integrations/native/opentelemetry
+	ingestionVersionHeader = "x-langfuse-ingestion-version"
+	ingestionVersion       = "4"
+	tracerName             = "github.com/tzilkha/langfuse-go"
 )
 
 // spanEntry is an OTel span we are tracking so future child observations
@@ -104,6 +107,8 @@ func (l *Langfuse) initTracer(ctx context.Context) error {
 		otlptracehttp.WithURLPath(otelTracesPath),
 		otlptracehttp.WithHeaders(map[string]string{
 			"Authorization": basicAuth(l.publicKey, l.secretKey),
+			// Without it, Langfuse may show OTel data up to 10 minutes late.
+			ingestionVersionHeader: ingestionVersion,
 		}),
 	}
 	if strings.EqualFold(u.Scheme, "http") {
