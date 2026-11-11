@@ -93,7 +93,7 @@ type Score struct {
 	ID            string  `json:"id,omitempty"`
 	TraceID       string  `json:"traceId,omitempty"`
 	Name          string  `json:"name,omitempty"`
-	Value         float64 `json:"value,omitempty"`
+	Value         float64 `json:"value"`
 	ObservationID string  `json:"observationId,omitempty"`
 	Comment       string  `json:"comment,omitempty"`
 }
